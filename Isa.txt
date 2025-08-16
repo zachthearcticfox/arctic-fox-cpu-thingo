@@ -1,0 +1,89 @@
+Arctic Fox 16
+16-bit Von neumann CPU
+ISA
+
+(Recommended) Value Memory: 	   0x0000 - 0x7fff [where values are stored, e.g. variables]
+(Recommended) Code Memory:  	   0x8000 - 0xf6ff [where code is stored]
+Subroutine Memory: 		   0xf700 - 0xfefe [where subroutine code is stored]
+Keyboard Key: 	   		   0xfeff [ascii code of key pressed, 0x0000 if no key]
+Character Memory:  		   0xff00 - 0xfffe [tty memory]
+Clear Character Memory Signal:	   0xffff	
+
+Registers: R0-RF
+Byte Registers: B0-BF
+Flag Registers: ZF, CF, GF, EF, LF
+
+Alu set: add, subtract, multiply, divide, remainder, bitwise and, bitwise not, bitwise or, bitwise exclusive or, shift left, shift right, compare
+
+Instructions span across 4 memory addresses, example: (0x8000 = code, 0x8001 = a, 0x8002 = b, 0x8003 = c), (0x8004 = code, 0x8005 = a, 0x8006 = b, 0x8007 = c)
+
+Each subroutine can be up to 511 words (127 instructions). subroutines are given identifier numbers, which count up for every subroutine, so for 3 subroutines, the first subroutine appearing would be 1, and last would be 3. They are stored in srt memory like this: (0xf700 = number, 0xf701-0xf800 = code), (0xf801 = number, 0xf802-0xf901 = code)
+
+JMP in subroutines jumps to the specific address inside the subroutine (511 words span)
+
+Inst set:
+nop 0
+ldi 1   dst srci | load immediate
+mov 2   dst src  | move
+add 3   dst src src | add
+sub 4   dst src src | subtract
+mul 5   dst src src | multiply
+div 6   dst src src | divide
+rem 7   dst src src | remainder
+and 8   dst src src | bitwise and
+not 9   dst src | bitwise not
+or 10   dst src src | bitwise or
+xor 11  dst src src | bitwise xor
+lsh 12  dst src | left shift
+rsh 13  dst src | right shift
+cmp 14  src src | compare
+brh 15  dsti | branch
+bgt 16  dsti | branch if greater
+beq 17  dsti | branch if equal
+blt 18  dsti | branch if less
+bng 19  dsti | branch if not greater
+bne 20  dsti | branch if not equal
+bnl 21  dsti | branch if not less
+biz 22  dsti | branch if zero
+bnz 23  dsti | branch if not zero
+bc 24   dsti | branch if carry
+bnc 25  dsti | branch if not carry
+call 26 sub_name | call srt
+ret 27 | return from subroutine
+addi 28 dst src srci | add immediate
+subi 29 dst src srci | subtract immediate
+muli 30 dst src srci | multiply immediate
+divi 31 dst src srci | divide immediate
+andi 32 dst src srci | bitwise and immediate
+ori 33  dst src srci | bitwise or immediate
+xori 34 dst src srci | bitwise xor immediate
+cmpi 35 src srci | compare immediate
+bytw 36 dst src | byte to word
+wotb 37 dst dst src | word to bytes
+ld   38 src dst | load value from mem to register (source is address)
+str  39 dst src | store value in mem from register (source is address)
+hlt  40 | halt
+hz   41 | halt if zero
+hg   42 | halt if greater
+he   43 | halt if equal
+hl   44 | halt in less
+srt  45 sub_name | start subroutine
+cale 46 sub_name | call srt if equal
+clne 47 sub_name | call srt if not zero
+calg 48 sub_name | call srt if greater
+clng 49 sub_name | call srt if not greater
+cllt 50 sub_name | call srt if less
+clnl 51 sub_name | call srt if not less
+calz 52 sub_name | call srt if zero
+clnz 53 sub_name | call srt if not zero
+calc 54 sub_name | call srt if carry
+clnc 55 sub_name | call srt if not carry
+inc 56 dst+src | increment register by 1
+dec 57 dst+src | decrement register by 1
+smi 58 srci dst | store value in mem from register (source immediate is address)
+lmi 59 dst srci | load value in mem to register (source immediate is address)
+soi 60 dsti srci | store value in mem from immediate (source immediate is address)
+
+assembler directives:
+org (address) | loads the program at a certain point of memory, instead of 0x0000, PC doesn't increment after this
+dfw (word) | puts a word in the address that the pc is currently on, PC increments by only 1 after this
