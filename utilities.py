@@ -1,6 +1,6 @@
 import zlib, base64
 
-def encodeToMemory(data: list[int]) -> str: # made by __spetzers__
+def encodeToMemory(data: list[int]) -> str: # function made by __spetzers__
 		huge_memory_size = 65535
 		while huge_memory_size > len(data):
 				data.append(0)
@@ -25,4 +25,11 @@ def encodeToMemory(data: list[int]) -> str: # made by __spetzers__
 
 		return code
 
-print(encodeToMemory([0, 0, 0, 0, 16, 15, 14, 13, 12, 11, 10, 9]))
+def string_to_kputs(string: str, start: int) -> str:
+	output = ""
+	for i, char in enumerate(string):
+		output = f'{output}soi {start+i:04x} \'{char}\'\n'
+	output = f'{output}call kputs'
+	return output
+
+print(string_to_kputs("Checking if kernel is ok...", 0x6e0e))
