@@ -85,5 +85,6 @@ lmi 59 dst srci | load value in mem to register (source immediate is address)
 soi 60 dsti srci | store value in mem from immediate (source immediate is address)
 
 assembler directives:
-org (address) | loads the program at a certain point of memory, instead of 0x0000, PC doesn't increment after this
-dfw (word) | puts a word in the address that the pc is currently on, PC increments by only 1 after this
+org (address) | loads the program at a certain point of memory, instead of 0x0000
+dfw (word) | puts a word in the address that the pc is currently on
+macro (name) (value) | creates a macro

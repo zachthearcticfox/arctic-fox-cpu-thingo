@@ -1,11 +1,12 @@
-; echo <text> - output parameter 1
-; chkram - checks if ram is working well
-; reboot - reboots the os
-; clear - clear the display
-; pwroff - turn the cpu off
+; echo <text> - output parameter 1 [unfinished]
+; chkram - checks if ram is working well [unfinished]
+; reboot - reboots the os [unfinished]
+; clear - clear the display [unfinished]
+; pwroff - turn the cpu off [unfinished]
 
 org 8100
 dfw afaf ;magic number
+macro CHAR_LOCATION_STORAGE 7fff
 
 ; char location storage will be at 0x7fff
 ldi r0 0xff00
@@ -13,7 +14,7 @@ ldi r1 0x7fff
 str r1 r0
 
 srt kputc ;b0 = character, stores it in ff00-fffe (tty memory)
-  ldi r1 7fff
+  ldi r1 CHAR_LOCATION_STORAGE
   ld r1 r2
   str r2 b0
   addi r2 r2 1
@@ -24,7 +25,7 @@ srt kputs ;r0 = string start address, b0 = string length
   ldi b1 0 ;b1 is loop counter
   .puts_loop:
     ld r0 r1
-    lmi 7fff r3
+    lmi CHAR_LOCATION_STORAGE r3
     str r1 r3
     addi b1 b1 1
     addi r0 r0 1
@@ -72,9 +73,34 @@ srt kgetc ;gets a character from user input - stores character in b0, reads key 
 ret
 
 srt kmain ;main kernel routine - handles commands
-  ; command buffer: 7f10-7f1f
+  ; command buffer: 7f10-7f3f
 
-  ;
-  ; not done yet
-  ;
+  ldi r6 7f10
+
+  .get_userinput_loop:
+    call kgetc
+    cmpi b0 0d
+    beq .end_input
+
+    call kputc
+    str r6 b0
+    addi r6 r6 1
+    brh .get_userinput_loop
+
+  .end_input:
+    ldi b0 0
+    str r6 b0
+
+    ldi r6 7f10
+    .echo_loop:
+      ld r6 r5
+      cmpi r5 0
+      beq .loop_done
+      mov b0 r5
+      call kputc
+      addi r6 r6 1
+      brh .echo_loop
+
+    .loop_done:
+      brh .get_userinput_loop
 ret
