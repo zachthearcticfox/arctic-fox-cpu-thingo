@@ -32,4 +32,4 @@ def string_to_kputs(string: str, start: int) -> str:
 	output = f'{output}call kputs'
 	return output
 
-print(string_to_kputs("Checking if kernel is ok...", 0x6e0e))
+print(string_to_kputs("Arctic Fox OS Checking if kernel is ok", 0x6e23))

@@ -9,8 +9,8 @@ dfw afaf ;magic number
 macro CHAR_LOCATION_STORAGE 7fff
 
 ; char location storage will be at 0x7fff
-ldi r0 0xff00
-ldi r1 0x7fff
+ldi r0 ff00
+ldi r1 7fff
 str r1 r0
 
 srt kputc ;b0 = character, stores it in ff00-fffe (tty memory)
@@ -54,14 +54,12 @@ srt kreboot ;reboot the system - 0x8000 is where bootloader is stored
 ret
 
 str kcltty ;clears the terminal - 0xffff is tty clear signal
-  ldi r0 ffff
-  ldi b0 1
-  str r0 b0
+  soi ffff 1
+  soi ffff 0
 ret
 
 srt kgetc ;gets a character from user input - stores character in b0, reads key from 0xfeff since that is where it is stored
-  ldi r0 feff
-  ld r0 b1
+  lmi feff b1
   cmpi b1 0000
   beq .nochar
   brh .char 
@@ -79,7 +77,7 @@ srt kmain ;main kernel routine - handles commands
 
   .get_userinput_loop:
     call kgetc
-    cmpi b0 0d
+    cmpi b0 d
     beq .end_input
 
     call kputc
